@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class ListOperationController {
 
@@ -31,11 +33,27 @@ public class ListOperationController {
     }
 
     @Operation(description = "This is to end User information")
-    @PostMapping(path = "v1/userData", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "v1/userData", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(UserResponseView.Views.V1.class)
-    public ResponseEntity<UserResponseView> postUserData(@RequestBody UserProfileRequestView userProfileRequestView)
-    {
-        UserResponseView userResponseView = userService.getUserName(userProfileRequestView);
+    public ResponseEntity<UserResponseView> postUserData(@RequestBody UserProfileRequestView userProfileRequestView) {
+        UserResponseView userResponseView = userService.addUsers(userProfileRequestView);
         return ResponseEntity.ok(userResponseView);
+    }
+
+    @Operation(description = "This API to get all userdata")
+    @GetMapping(path = "v1/getAllUserData", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(UserResponseView.Views.V1.class)
+    public ResponseEntity<List<UserResponseView>> getAllUserData() {
+        List<UserResponseView> userResponseViewList = userService.getAllUserData();
+        return ResponseEntity.ok(userResponseViewList);
+    }
+
+
+    @Operation(description = "This API to get all userdata based on user name")
+    @GetMapping(path = "v1/getAllUserData/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(UserResponseView.Views.V1.class)
+    public ResponseEntity<List<UserResponseView>> getAllUserDataByName(String userName) {
+        List<UserResponseView> userResponseViewList = userService.getAllUserDataByName(userName);
+        return ResponseEntity.ok(userResponseViewList);
     }
 }
